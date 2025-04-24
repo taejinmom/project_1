@@ -1,0 +1,23 @@
+# 1. Node.js 이미지를 사용
+FROM node:16
+
+# 2. 작업 디렉토리 설정
+WORKDIR /app
+
+# 3. package.json 및 package-lock.json 파일을 컨테이너로 복사
+COPY package*.json ./
+
+# 4. 의존성 설치
+RUN npm install
+
+# 5. 프로젝트 소스 전체를 컨테이너로 복사
+COPY . .
+
+# 6. React 애플리케이션 빌드
+RUN npm run build
+
+# 7. React 애플리케이션 실행
+CMD ["npm", "start"]
+
+# 8. 포트 3000을 외부와 연결
+EXPOSE 3000

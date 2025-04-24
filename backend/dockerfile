@@ -1,0 +1,27 @@
+# 1단계: Node를 이용해 React 앱 빌드
+FROM node:18 AS react-build
+WORKDIR /app
+COPY ../frontend ./frontend
+WORKDIR /app/frontend
+RUN npm install
+RUN npm run build
+
+# 2단계: Spring Boot 앱 빌드
+FROM gradle:8.5-jdk17 AS spring-build
+COPY . /home/app
+WORKDIR /home/app/backend
+RUN gradle clean build -x test
+
+# 3단계: 최종 이미지
+FROM openjdk:17-jdk-slim
+VOLUME /tmp
+WORKDIR /app
+COPY --from=spring-build /home/app/backend/build/libs/*.jar app.jar
+COPY --from=react-build /app/frontend/build /app/static
+
+# Spring Boot가 React build 파일을 읽을 수 있도록 static으로 복사
+RUN mkdir -p /app/resources/static && \
+    cp -r /app/static/* /app/resources/static/
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
