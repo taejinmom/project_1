@@ -1,0 +1,78 @@
+pipeline {
+    agent any
+
+    environment {
+        // 환경 변수 설정
+        REPO_URL = 'https://github.com/taejinmom/project_1.git'  // GitHub 저장소 URL
+        BRANCH = 'main'  // 사용하고자 하는 브랜치
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // GitHub에서 코드 체크아웃
+                    git branch: "${BRANCH}", url: "${REPO_URL}"
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    // 빌드 단계 (예: Maven, Gradle, npm 등)
+                    echo 'Building project...'
+                    // Gradle 빌드 실행
+					echo 'Running Gradle build...'
+					sh '/app/backend/gradlew build'  // Gradle 빌드를 실행
+
+					// React 빌드 실행
+					echo 'Building React project...'
+						sh 'npm install'  // React 프로젝트의 의존성 설치
+						sh '/app/frontend/npm run build'
+					}
+
+						// React 빌드된 파일을 원하는 디렉토리로 복사
+						echo 'Copying React build files...'
+						sh 'cp -r /app/frontend/build/* /app/backend/src/main/resources/static'  // React 빌드 결과물을 복사
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    // 테스트 단계 (예: Jest, Mocha 등)
+                    echo 'Running tests...'
+                    sh 'npm test'  // 예시: npm 테스트 실행
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    // 배포 단계 (예: AWS, Docker, 서버로 배포 등)
+                    echo 'Deploying project...'
+                    // ngrok URL을 활용하여 배포 환경 설정
+                    // 예시: ngrok 주소로 배포하는 스크립트 추가 가능
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            // 빌드가 성공적으로 끝난 후 실행되는 단계
+            echo 'Build and Deploy Succeeded!'
+        }
+        failure {
+            // 빌드가 실패한 후 실행되는 단계
+            echo 'Build or Deploy Failed!'
+        }
+        always {
+            // 항상 실행되는 단계
+            echo 'Cleaning up...'
+        }
+    }
+}
