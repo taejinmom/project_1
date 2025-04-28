@@ -2,77 +2,53 @@ pipeline {
     agent any
 
     environment {
-        // 환경 변수 설정
-        REPO_URL = 'https://github.com/taejinmom/project_1.git'  // GitHub 저장소 URL
-        BRANCH = 'main'  // 사용하고자 하는 브랜치
+        REPO_URL = 'https://github.com/taejinmom/project_1.git'  // GitHub 리포지토리 URL
+        BRANCH = 'main'  // 사용하는 브랜치
+        SPRING_SERVER = 'your-spring-server-ip'  // Spring Boot 서버 IP
+        SPRING_USER = 'your-username'  // Spring Boot 서버의 사용자 이름
+        SPRING_PATH = '/path/to/springboot/app'  // Spring Boot 애플리케이션 경로
     }
 
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    // GitHub에서 코드 체크아웃
-                    git branch: "${BRANCH}", url: "${REPO_URL}"
-                }
+                echo 'Cloning repository...'
+                git branch: "${BRANCH}", url: "${REPO_URL}"
             }
         }
 
-        stage('Build') {
+        stage('Prepare') {
             steps {
-                script {
-                    // 빌드 단계 (예: Maven, Gradle, npm 등)
-                    echo 'Building project...'
-                    // Gradle 빌드 실행
-					echo 'Running Gradle build...'
-					./backend/gradlew build  // Gradle 빌드를 실행
-
-					// React 빌드 실행
-					echo 'Building React project...'
-						./frontend/npm install  // React 프로젝트의 의존성 설치
-						./frontend/npm run build
-					}
-
-						// React 빌드된 파일을 원하는 디렉토리로 복사
-						echo 'Copying React build files...'
-						cp -r ./frontend/build/* ./backend/src/main/resources/static  // React 빌드 결과물을 복사
-                }
+                echo 'Preparing directories...'
+                sh '''
+                    mkdir -p ${SPRING_SERVER_PATH}
+                    rm -rf ${SPRING_SERVER_PATH}/*
+                '''
             }
         }
 
-        stage('Test') {
+        stage('Copy Source to Spring Server') {
             steps {
-                script {
-                    // 테스트 단계 (예: Jest, Mocha 등)
-                    echo 'Running tests...'
-                    //sh 'npm test'  // 예시: npm 테스트 실행
-                }
+                echo 'Copying source code to Spring server...'
+                sh '''
+                    cp -r * ${SPRING_SERVER_PATH}/
+                '''
             }
         }
 
-        stage('Deploy') {
+        stage('Done') {
             steps {
-                script {
-                    // 배포 단계 (예: AWS, Docker, 서버로 배포 등)
-                    echo 'Deploying project...'
-                    // ngrok URL을 활용하여 배포 환경 설정
-                    // 예시: ngrok 주소로 배포하는 스크립트 추가 가능
-                }
+                echo 'Deployment to Spring server complete!'
             }
         }
     }
 
     post {
         success {
-            // 빌드가 성공적으로 끝난 후 실행되는 단계
-            echo 'Build and Deploy Succeeded!'
+            echo 'All steps completed successfully!'
         }
         failure {
-            // 빌드가 실패한 후 실행되는 단계
-            echo 'Build or Deploy Failed!'
-        }
-        always {
-            // 항상 실행되는 단계
-            echo 'Cleaning up...'
+            echo 'Pipeline failed. Check logs.'
         }
     }
 }

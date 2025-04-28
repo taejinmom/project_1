@@ -5,20 +5,21 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # 필요한 패키지 설치
 RUN apt-get update && \
-    apt-get install -y sudo openssh-server curl unzip gnupg2 software-properties-common openjdk-17-jdk wget && \
+    apt-get install -y sudo openssh-server vim curl unzip gnupg2 software-properties-common openjdk-17-jdk wget && \
     apt-get clean
 
-# root 비밀번호 설정
+# Step 5: Install SFTP and configure SSH
 RUN echo "root:password" | chpasswd
+RUN mkdir /var/run/sshd
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
 
 # jenkins 사용자 생성 및 sudo 권한 부여
 RUN useradd -m -s /bin/bash jenkins && \
     echo "jenkins ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
     mkdir /home/jenkins/.ssh && \
     chown -R jenkins:jenkins /home/jenkins/.ssh
-
-# SSH 설정
-RUN mkdir /var/run/sshd
+RUN echo "jenkins:password" | chpasswd
 
 # Jenkins 설치
 RUN curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | tee \
@@ -37,13 +38,13 @@ RUN wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-stable-linux-amd64.zip && \
     rm ngrok-stable-linux-amd64.zip
 
 # 포트 노출 (SSH:22, Jenkins:8080)
-EXPOSE 22 8080
+EXPOSE 22 8080 8001
 
-# Jenkins 초기 디렉토리 생성
+# Jenkins 초기 디렉토리 생성 (jenkins 사용자로 변경 전에 생성)
 RUN mkdir -p /var/lib/jenkins && chown -R jenkins:jenkins /var/lib/jenkins
 
-# jenkins 사용자로 전환
-USER jenkins
+# jenkins 사용자로 전환 <-- ssh 실행은 root로 해야하기때문에 에러발생
+# USER jenkins
 
 # 컨테이너 시작 시 SSH 및 Jenkins 실행
-CMD /usr/sbin/sshd && java -jar /usr/share/java/jenkins.war
+CMD ["/bin/bash", "-c", "service ssh start && java -jar /usr/share/java/jenkins.war"]

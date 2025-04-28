@@ -8,6 +8,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Step 3: Update and install required packages
 RUN apt-get update && apt-get install -y --fix-missing \
     openjdk-17-jdk \
+	vim \
+	unzip \
+	curl \ 
     nodejs \
     npm \
     openssh-server \
@@ -15,7 +18,7 @@ RUN apt-get update && apt-get install -y --fix-missing \
     && rm -rf /var/lib/apt/lists/*
 
 # Step 4: Copy current directory contents into the container
-COPY . /app
+# COPY . /app
 
 # Step 5: Install SFTP and configure SSH
 RUN mkdir /var/run/sshd
