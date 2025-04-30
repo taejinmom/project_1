@@ -4,9 +4,9 @@ pipeline {
     environment {
         REPO_URL = 'https://github.com/taejinmom/project_1.git'  // GitHub 리포지토리 URL
         BRANCH = 'main'  // 사용하는 브랜치
-        SPRING_SERVER = 'your-spring-server-ip'  // Spring Boot 서버 IP
-        SPRING_USER = 'your-username'  // Spring Boot 서버의 사용자 이름
-        SPRING_PATH = '/path/to/springboot/app'  // Spring Boot 애플리케이션 경로
+        SPRING_SERVER = '172.18.0.10'  // Spring Boot 서버 IP
+        SPRING_USER = 'root'  // Spring Boot 서버의 사용자 이름
+        SPRING_PATH = '/app/project_1'  // Spring Boot 애플리케이션 경로
     }
 
     stages {
