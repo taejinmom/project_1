@@ -2,11 +2,11 @@ pipeline {
     agent any
 
     environment {
-        REPO_URL = 'https://github.com/taejinmom/project_1.git'  // GitHub 리포지토리 URL
-        BRANCH = 'main'  // 사용하는 브랜치
-        SPRING_SERVER = '172.18.0.10'  // Spring Boot 서버 IP
-        SPRING_USER = 'root'  // Spring Boot 서버의 사용자 이름
-        SPRING_PATH = '/app/project_1'  // Spring Boot 애플리케이션 경로
+        REPO_URL = 'https://github.com/taejinmom/project_1.git'
+        BRANCH = 'main'
+        SPRING_SERVER = '172.18.0.10'
+        SPRING_USER = 'root'
+        SPRING_PATH = '/app/project_1'
     }
 
     stages {
@@ -17,28 +17,19 @@ pipeline {
             }
         }
 
-        stage('Prepare') {
+        stage('Copy to Spring Server via SCP') {
             steps {
-                echo 'Preparing directories...'
-                sh '''
-                    mkdir -p ${SPRING_PATH}
-                    rm -rf ${SPRING_PATH}/*
-                '''
-            }
-        }
-
-        stage('Copy Source to Spring Server') {
-            steps {
-                echo 'Copying source code to Spring server...'
-                sh '''
-                    cp -r * ${SPRING_PATH}/
-                '''
+                echo 'Transferring files to Spring server...'
+                sh """
+                    ssh ${SPRING_USER}@${SPRING_SERVER} 'mkdir -p ${SPRING_PATH} && rm -rf ${SPRING_PATH}/*'
+                    scp -r * ${SPRING_USER}@${SPRING_SERVER}:${SPRING_PATH}/
+                """
             }
         }
 
         stage('Done') {
             steps {
-                echo 'Deployment to Spring server complete!'
+                echo 'Deployment complete!'
             }
         }
     }
