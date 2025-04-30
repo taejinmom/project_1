@@ -7,14 +7,16 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Step 3: Update and install required packages
 RUN apt-get update && apt-get install -y --fix-missing \
+    curl \
+    vim \
+    unzip \
     openjdk-17-jdk \
-	vim \
-	unzip \
-	curl \ 
-    nodejs \
-    npm \
     openssh-server \
     git \
+    ca-certificates \
+    gnupg \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 # Step 4: Copy current directory contents into the container
@@ -35,5 +37,9 @@ EXPOSE 22
 EXPOSE 3000
 EXPOSE 8000
 
-# Step 8: Start SSH service
+# Step 8 : time zone check
+ENV TZ=Asia/Seoul
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Last : Start SSH service
 CMD ["/bin/bash", "-c", "service ssh start && tail -f /dev/null"]

@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # 필요한 패키지 설치
 RUN apt-get update && \
-    apt-get install -y sudo openssh-server vim curl unzip gnupg2 software-properties-common openjdk-17-jdk wget && \
+    apt-get install -y sudo openssh-server git vim curl unzip gnupg2 software-properties-common openjdk-17-jdk wget && \
     apt-get clean
 
 # Step 5: Install SFTP and configure SSH
