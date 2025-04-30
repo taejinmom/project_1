@@ -21,8 +21,8 @@ pipeline {
             steps {
                 echo 'Preparing directories...'
                 sh '''
-                    mkdir -p ${SPRING_SERVER_PATH}
-                    rm -rf ${SPRING_SERVER_PATH}/*
+                    mkdir -p ${SPRING_PATH}
+                    rm -rf ${SPRING_PATH}/*
                 '''
             }
         }
@@ -31,7 +31,7 @@ pipeline {
             steps {
                 echo 'Copying source code to Spring server...'
                 sh '''
-                    cp -r * ${SPRING_SERVER_PATH}/
+                    cp -r * ${SPRING_PATH}/
                 '''
             }
         }
