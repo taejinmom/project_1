@@ -14,6 +14,6 @@ public class Test {
 
     @GetMapping("/ping")
     public ResponseEntity ping() {
-        return ResponseEntity.ok("pong4");
+        return ResponseEntity.ok("pong3");
     }
 }

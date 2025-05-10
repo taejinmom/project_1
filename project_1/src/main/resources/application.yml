@@ -1,0 +1,22 @@
+server:
+  port: 8000
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:project_1;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console
+#    sql:
+#      init:
+#        mode: always
+#        schema-locations: classpath:init-db/initDB.sql  # 경로 확인 필요
+
+logging:
+  level:
+    org.hibernate.SQL: debug  # SQL 쿼리 로그 활성화
+    org.hibernate.type.descriptor.sql.BasicBinder: trace  # 파라미터 바인딩 값 로그 활성화
