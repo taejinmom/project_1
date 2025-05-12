@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class UserController {
     @GetMapping("/users/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
         try {
-            User user = userService.getUserByUsername(username);
+            User user = userService.findById(username).orElse(new User());
             if (user != null) {
                 return new ResponseEntity<>(user, HttpStatus.OK);  // 사용자 발견시 200 OK와 함께 반환
             } else {

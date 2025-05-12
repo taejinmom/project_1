@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * packageName    : com.project.user.service
@@ -24,9 +25,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    // 사용자 이름으로 사용자 찾기
-    public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<User> findById(String loginId) {
+        return userRepository.findById(loginId);
     }
 
     // 사용자 전체 리스트 가져오기

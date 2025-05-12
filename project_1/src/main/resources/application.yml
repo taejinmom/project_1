@@ -1,6 +1,0 @@
-spring:
-  profiles:
-    active: dev  # 기본은 개발 환경, 운영 시엔 'prod'로 변경
-
-server:
-  port: 8000

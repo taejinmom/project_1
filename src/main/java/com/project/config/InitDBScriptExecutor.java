@@ -31,14 +31,14 @@ public class InitDBScriptExecutor {
 
     private final Logger logger = LoggerFactory.getLogger(InitDBScriptExecutor.class);
 
-//    @PostConstruct
-//    public void init() {
-//        try (Connection connection = dataSource.getConnection()) {
-//            ScriptUtils.executeSqlScript(connection, new ClassPathResource("/init-db/initDB-H2.sql"));
-//            logger.info("✅ initDB-H2.sql executed successfully.");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            logger.error("❌ Failed to execute initDB-H2.sql");
-//        }
-//    }
+//    @PostConstruct // H2에서만
+    public void init() {
+        try (Connection connection = dataSource.getConnection()) {
+            ScriptUtils.executeSqlScript(connection, new ClassPathResource("init-db/initDB-H2.sql"));
+            logger.info("✅ initDB-H2.sql executed successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("❌ Failed to execute initDB-H2.sql");
+        }
+    }
 }
