@@ -31,12 +31,7 @@ CREATE TABLE IF NOT EXISTS t_product (
     category_id VARCHAR(36),
     thumbnail_url TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT fk_product_category
-        FOREIGN KEY (category_id)
-        REFERENCES t_category(category_id)
-        ON DELETE SET NULL
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 상품 이미지 테이블
@@ -45,14 +40,13 @@ CREATE TABLE IF NOT EXISTS t_product_image (
     product_id VARCHAR(40),
     image_url TEXT NOT NULL,
     is_thumbnail BOOLEAN DEFAULT false,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT fk_product_image_product
-        FOREIGN KEY (product_id)
-        REFERENCES t_product(product_id)
-        ON DELETE CASCADE
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+delete from t_user;
+delete from t_category;
+delete from t_product;
+delete from t_product_image;
 -- 데이터 삽입
 -- 관리자 계정 1개
 --INSERT INTO t_user (user_id, login_id, password, name, email, phone, address, user_role)
@@ -70,3 +64,4 @@ CREATE TABLE IF NOT EXISTS t_product_image (
 --
 --INSERT INTO t_user (user_id, login_id, password, name, email, phone, address, user_role)
 --VALUES ('550e8400-e29b-41d4-a716-446655440004', 'user4', 'a', '이민정', 'user4@example.com', '010-5555-5555', '서울시 서초구', 'USER');
+

@@ -1,6 +1,5 @@
-package com.project.config;
+package com.project.config.initDB;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

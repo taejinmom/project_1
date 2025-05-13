@@ -50,8 +50,9 @@ public class User {
     @Column(name = "address", columnDefinition = "TEXT")
     private String address;
 
-    @Column(name = "user_role", length = 20)
-    private final String userRole = "USER";
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_role")
+    private UserRole userRole;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
